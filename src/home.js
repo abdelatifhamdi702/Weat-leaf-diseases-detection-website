@@ -167,10 +167,6 @@ export const ImageUpload = () => {
       let formData = new FormData()
       formData.append('file', selectedFile)
       let res = await axios({
-        headers: {
-          Accept: 'application/json, text/plain, /',
-          'Content-Type': 'multipart/form-data',
-        },
         method: 'post',
         url: 'https://wheat-leaves-disease-classification-api-hxvv.onrender.com/predict',
         data: formData,
