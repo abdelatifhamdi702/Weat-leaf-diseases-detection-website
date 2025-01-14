@@ -264,7 +264,7 @@ export const ImageUpload = () => {
                     maxFileSize="9000000000000000000000"
                     acceptedFiles={['image/*']}
                     dropzoneText={
-                      'Drag and drop an image of a potato plant leaf to process'
+                      'Drag and drop an image of a wheat plant leaf to process'
                     }
                     onChange={onSelectFile}
                   />
