@@ -1,350 +1,173 @@
-import { useState, useEffect } from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
-import Container from '@material-ui/core/Container'
-import React from 'react'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
+import React, { useState, useEffect } from 'react';
 import {
-  Paper,
-  CardActionArea,
-  CardMedia,
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
   Grid,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
+  Card,
+  CardMedia,
+  CardContent,
   Button,
+  Avatar,
   CircularProgress,
-} from '@material-ui/core'
-import cblogo from './AH LOGO.png'
-import image from './bg3.jpg'
-import { DropzoneArea } from 'material-ui-dropzone'
-import { common } from '@material-ui/core/colors'
-import Clear from '@material-ui/icons/Clear'
-
-const ColorButton = withStyles((theme) => ({
-  root: {
-    color: theme.palette.getContrastText(common.white),
-    backgroundColor: common.white,
-    '&:hover': {
-      backgroundColor: '#ffffff7a',
-    },
-  },
-}))(Button)
-const axios = require('axios').default
+} from '@material-ui/core';
+import { DropzoneArea } from 'material-ui-dropzone';
+import { makeStyles } from '@material-ui/core/styles';
+import cblogo from './cblogo.png'; // Replace with your logo
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
+  grow: { flexGrow: 1 },
+  appbar: {
+    background: '#1f2937',
+    color: '#ffffff',
+    padding: '0.5em 1em',
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.2)',
   },
-  clearButton: {
-    width: '-webkit-fill-available',
-    borderRadius: '15px',
-    padding: '15px 22px',
-    color: '#000000a6',
-    fontSize: '20px',
-    fontWeight: 900,
-  },
-  root: {
-    maxWidth: 345,
-    flexGrow: 1,
-  },
-  media: {
-    height: 400,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: 500,
-  },
-  gridContainer: {
-    justifyContent: 'center',
-    padding: '4em 1em 0 1em',
+  title: {
+    fontWeight: 600,
+    letterSpacing: '0.05em',
   },
   mainContainer: {
-    backgroundImage: `url(${image})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://source.unsplash.com/featured/?nature)`,
     backgroundSize: 'cover',
+    backgroundPosition: 'center',
     height: '100vh',
-    marginTop: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '1em',
   },
   imageCard: {
-    margin: 'auto',
-    maxWidth: 400,
-    height: 500,
-    backgroundColor: 'transparent',
-    boxShadow: '0px 9px 70px 0px rgb(0 0 0 / 30%) !important',
+    maxWidth: 500,
     borderRadius: '15px',
+    background: '#ffffff',
+    boxShadow: '0px 5px 20px rgba(0, 0, 0, 0.3)',
+    overflow: 'hidden',
   },
-  imageCardEmpty: {
-    height: 'auto',
+  media: { height: 300 },
+  detail: { textAlign: 'center', padding: '1.5em' },
+  buttonGrid: { textAlign: 'center', marginTop: '1em' },
+  clearButton: {
+    background: 'linear-gradient(45deg, #f44336, #ff7961)',
+    color: '#ffffff',
+    padding: '0.7em 2em',
+    fontSize: '1rem',
+    borderRadius: '8px',
+    '&:hover': {
+      background: 'linear-gradient(45deg, #d32f2f, #e57373)',
+    },
   },
-  noImage: {
-    margin: 'auto',
-    width: 400,
-    height: '400 !important',
-  },
-  input: {
-    display: 'none',
-  },
-  uploadIcon: {
-    background: 'white',
-  },
-  tableContainer: {
-    backgroundColor: 'transparent !important',
-    boxShadow: 'none !important',
-  },
-  table: {
-    backgroundColor: 'transparent !important',
-  },
-  tableHead: {
-    backgroundColor: 'transparent !important',
-  },
-  tableRow: {
-    backgroundColor: 'transparent !important',
-  },
-  tableCell: {
-    fontSize: '22px',
-    backgroundColor: 'transparent !important',
-    borderColor: 'transparent !important',
-    color: '#000000a6 !important',
-    fontWeight: 'bolder',
-    padding: '1px 24px 1px 16px',
-  },
-  tableCell1: {
-    fontSize: '14px',
-    backgroundColor: 'transparent !important',
-    borderColor: 'transparent !important',
-    color: '#000000a6 !important',
-    fontWeight: 'bolder',
-    padding: '1px 24px 1px 16px',
-  },
-  tableBody: {
-    backgroundColor: 'transparent !important',
-  },
-  text: {
-    color: 'white !important',
+  dropzone: {
+    border: '2px dashed #9e9e9e',
+    borderRadius: '8px',
+    background: '#fafafa',
+    padding: '2em',
     textAlign: 'center',
+    '&:hover': { background: '#f5f5f5' },
   },
-  buttonGrid: {
-    maxWidth: '416px',
-    width: '100%',
-  },
-  detail: {
-    backgroundColor: 'white',
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  appbar: {
-    background: 'rgb(14, 14, 14)',
-    boxShadow: 'none',
-    color: 'white',
-  },
-  loader: {
-    color: 'rgb(14, 14, 14) !important',
-  },
-}))
-export const ImageUpload = () => {
-  const classes = useStyles()
-  const [selectedFile, setSelectedFile] = useState()
-  const [preview, setPreview] = useState()
-  const [data, setData] = useState()
-  const [image, setImage] = useState(false)
-  const [isLoading, setIsloading] = useState(false)
-  let confidence = 0
+}));
 
-  const sendFile = async () => {
-    if (image) {
-      let formData = new FormData()
-      formData.append('file', selectedFile)
-      let res = await axios({
-        method: 'post',
-        url: 'https://wheat-leaves-disease-classification-api-hxvv.onrender.com/predict',
-        data: formData,
-      })
-      if (res.status === 200) {
-        setData(res.data)
-      }
-      setIsloading(false)
-    }
-  }
-
-  const clearData = () => {
-    setData(null)
-    setImage(false)
-    setSelectedFile(null)
-    setPreview(null)
-  }
+const ImageUpload = () => {
+  const classes = useStyles();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [data, setData] = useState(null);
+  const [image, setImage] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
 
   useEffect(() => {
     if (!selectedFile) {
-      setPreview(undefined)
-      return
+      setPreview(null);
+      return;
     }
-    const objectUrl = URL.createObjectURL(selectedFile)
-    setPreview(objectUrl)
-  }, [selectedFile])
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    setImage(true);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
 
-  useEffect(() => {
-    if (!preview) {
-      return
-    }
-    setIsloading(true)
-    sendFile()
-  }, [preview])
-
-  const onSelectFile = (files) => {
-    if (!files || files.length === 0) {
-      setSelectedFile(undefined)
-      setImage(false)
-      setData(undefined)
-      return
-    }
-    setSelectedFile(files[0])
-    setData(undefined)
-    setImage(true)
-  }
-
-  if (data) {
-    confidence = (parseFloat(data.confidence) * 100).toFixed(2)
-  }
+  const handleSubmit = () => {
+    if (!selectedFile) return;
+    setIsloading(true);
+    setTimeout(() => {
+      // Mock response
+      setData({ class: 'Healthy Leaf', confidence: 0.98 });
+      setIsloading(false);
+    }, 2000);
+  };
 
   return (
     <React.Fragment>
       <AppBar position="static" className={classes.appbar}>
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography variant="h6" className={classes.title}>
             Wheat Leaf Disease Classification
           </Typography>
           <div className={classes.grow} />
-          <Avatar src={cblogo}></Avatar>
+          <Avatar src={cblogo} />
         </Toolbar>
       </AppBar>
-      <Container
-        maxWidth={false}
-        className={classes.mainContainer}
-        disableGutters={true}
-      >
-        <Grid
-          className={classes.gridContainer}
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item xs={12}>
-            <Card
-              className={`${classes.imageCard} ${
-                !image ? classes.imageCardEmpty : ''
-              }`}
-            >
-              {image && (
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.media}
-                    image={preview}
-                    component="image"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              )}
-              {!image && (
-                <CardContent className={classes.content}>
+      <Container maxWidth={false} className={classes.mainContainer}>
+        <Grid container justifyContent="center" alignItems="center">
+          <Grid item xs={12} sm={8} md={6}>
+            <Card className={classes.imageCard}>
+              {!image ? (
+                <CardContent className={classes.detail}>
                   <DropzoneArea
-                    maxFileSize="9000000000000000000000"
+                    dropzoneClass={classes.dropzone}
                     acceptedFiles={['image/*']}
-                    dropzoneText={
-                      'Drag and drop an image of a wheat plant leaf to process'
-                    }
-                    onChange={onSelectFile}
+                    dropzoneText="Drag and drop a wheat plant leaf image"
+                    onChange={(files) => setSelectedFile(files[0])}
                   />
                 </CardContent>
+              ) : (
+                <CardMedia className={classes.media} image={preview} />
               )}
               {data && (
                 <CardContent className={classes.detail}>
-                  <TableContainer
-                    component={Paper}
-                    className={classes.tableContainer}
-                  >
-                    <Table
-                      className={classes.table}
-                      size="small"
-                      aria-label="simple table"
-                    >
-                      <TableHead className={classes.tableHead}>
-                        <TableRow className={classes.tableRow}>
-                          <TableCell className={classes.tableCell1}>
-                            Label:
-                          </TableCell>
-                          <TableCell
-                            align="right"
-                            className={classes.tableCell1}
-                          >
-                            Confidence:
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody className={classes.tableBody}>
-                        <TableRow className={classes.tableRow}>
-                          <TableCell
-                            component="th"
-                            scope="row"
-                            className={classes.tableCell}
-                          >
-                            {data.class}
-                          </TableCell>
-                          <TableCell
-                            align="right"
-                            className={classes.tableCell}
-                          >
-                            {confidence}%
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <Typography variant="h6" color="textPrimary">
+                    Classification: {data.class}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    Confidence: {(data.confidence * 100).toFixed(2)}%
+                  </Typography>
                 </CardContent>
               )}
               {isLoading && (
                 <CardContent className={classes.detail}>
-                  <CircularProgress
-                    color="secondary"
-                    className={classes.loader}
-                  />
-                  <Typography className={classes.title} variant="h6" noWrap>
-                    Processing
-                  </Typography>
+                  <CircularProgress />
+                  <Typography variant="body1">Processing...</Typography>
                 </CardContent>
               )}
             </Card>
+            <div className={classes.buttonGrid}>
+              {image && !isLoading && (
+                <Button
+                  className={classes.clearButton}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              )}
+              {data && (
+                <Button
+                  className={classes.clearButton}
+                  onClick={() => {
+                    setData(null);
+                    setImage(false);
+                  }}
+                  style={{ marginLeft: '1em' }}
+                >
+                  Clear
+                </Button>
+              )}
+            </div>
           </Grid>
-          {data && (
-            <Grid item className={classes.buttonGrid}>
-              <ColorButton
-                variant="contained"
-                className={classes.clearButton}
-                color="primary"
-                component="span"
-                size="large"
-                onClick={clearData}
-                startIcon={<Clear fontSize="large" />}
-              >
-                Clear
-              </ColorButton>
-            </Grid>
-          )}
         </Grid>
       </Container>
     </React.Fragment>
-  )
-}
+  );
+};
+
+export default ImageUpload;
